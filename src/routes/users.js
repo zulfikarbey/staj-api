@@ -34,9 +34,11 @@ router.get("/signin", async function (req, res, next) {
         isUserExist[0].password
       );
       if (isPasswordMatch) {
-        res.send(
-          generateAccessToken(isUserExist[0].email, isUserExist[0].role)
-        );
+        res.send({
+          token: generateAccessToken(isUserExist[0].email, isUserExist[0].role),
+          role: isUserExist[0].role,
+          email: isUserExist[0].email,
+        });
       } else {
         res.json("User Password Not Match");
       }
