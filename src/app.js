@@ -7,6 +7,7 @@ var cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var studentcrudRouter = require("./routes/student-crud");
+var internshipcrudRouter = require("./routes/internship-crud");
 
 const authenticateToken = require("./utils/auth-control");
 const adminControl = require("./utils/admin-control");
@@ -33,5 +34,11 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/studentcrud", authenticateToken, adminControl, studentcrudRouter);
+app.use(
+  "/internshipcrud",
+  authenticateToken,
+  adminControl,
+  internshipcrudRouter
+);
 
 module.exports = app;
