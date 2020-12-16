@@ -1,11 +1,44 @@
 const express = require("express");
 var router = express.Router();
 
-const mongoose = require("mongoose");
-var ObjectId = require("mongodb").ObjectID;
-
 const Internship = require("../models/internship");
-const User = require("../models/user");
+
+multer = require("multer");
+
+var storage = multer.diskStorage({
+  destination: "src/public/docs/",
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+var upload = multer({ storage: storage });
+
+router.post(
+  "/addAttachmentToSublistItemUnderInternship",
+  upload.array("myFile", 5),
+  async function (req, res, next) {
+    const images = [];
+
+    await req.files.map((item) => {
+      images.push({ path: "/docs/" + item.filename });
+    });
+
+    const intern = await Internship.findOne({
+      _id: req.body.internshipID,
+    });
+    var sublistIndex = intern.subList.findIndex(
+      (item) => item._id.toString() === req.body.sublistItemID.toString()
+    );
+
+    images.map((item) => intern.subList[sublistIndex].attachments.push(item));
+
+    intern
+      .save()
+      .then(() => res.json(images))
+      .catch((err) => res.json(err));
+  }
+);
 
 router.post("/getAllInternship", async function (req, res, next) {
   const intern = await Internship.find({});
