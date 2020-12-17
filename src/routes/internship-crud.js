@@ -30,12 +30,14 @@ router.post(
     var sublistIndex = intern.subList.findIndex(
       (item) => item._id.toString() === req.body.sublistItemID.toString()
     );
-
+    intern.subList[sublistIndex].attachments = [];
     images.map((item) => intern.subList[sublistIndex].attachments.push(item));
 
     intern
       .save()
-      .then(() => res.json(images))
+      .then(() => {
+        res.json(images);
+      })
       .catch((err) => res.json(err));
   }
 );
@@ -98,7 +100,10 @@ router.post(
       var sublistIndex = intern.subList.findIndex(
         (item) => item._id.toString() === req.body._id.toString()
       );
-      intern.subList[sublistIndex] = req.body;
+      intern.subList[sublistIndex].title = req.body.title;
+      intern.subList[sublistIndex].status = req.body.status;
+      intern.subList[sublistIndex].buttonsStatus = req.body.buttonsStatus;
+
       const newSublist = intern.subList[sublistIndex];
       intern.save().then((doc) => res.json(newSublist));
     } else {

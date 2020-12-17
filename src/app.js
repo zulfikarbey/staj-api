@@ -8,6 +8,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var studentcrudRouter = require("./routes/student-crud");
 var internshipcrudRouter = require("./routes/internship-crud");
+var studentDocumentUploadRouter = require("./routes/student-document-upload");
 
 const authenticateToken = require("./utils/auth-control");
 const adminControl = require("./utils/admin-control");
@@ -34,6 +35,12 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/studentcrud", authenticateToken, adminControl, studentcrudRouter);
+app.use(
+  "/studentdocumentupload",
+  authenticateToken,
+  studentDocumentUploadRouter
+);
+
 app.use(
   "/internshipcrud",
   authenticateToken,

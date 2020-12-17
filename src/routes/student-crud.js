@@ -5,27 +5,17 @@ var bcrypt = require("bcrypt");
 
 const User = require("../models/user");
 
-router.post("/add", async function (req, res, next) {
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(req.body.number, salt);
 
+
+
+
+
+router.post("/add", async function (req, res, next) {
   const updateID = req.body._id;
   const number = req.body.number;
   const name = req.body.name;
   const registerDate = req.body.registerDate;
   const email = req.body.email;
-
-  const password = hash;
-  const role = "student";
-
-  const student = new User({
-    number: number,
-    name: name,
-    registerDate: registerDate,
-    email: email,
-    password: password,
-    role: role,
-  });
 
   const isStudentExist = await User.find({
     _id: updateID,
@@ -43,6 +33,19 @@ router.post("/add", async function (req, res, next) {
       }
     );
   } else {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.number, salt);
+    const password = hash;
+    const role = "student";
+
+    const student = new User({
+      number: number,
+      name: name,
+      registerDate: registerDate,
+      email: email,
+      password: password,
+      role: role,
+    });
     student
       .save()
       .then((doc) => res.json(doc))
