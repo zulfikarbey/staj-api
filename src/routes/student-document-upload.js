@@ -25,8 +25,26 @@ router.post(
       images.push({ path: "/docs/" + item.filename });
     });
 
-//veritabanına kaydedecez resim pathlarini
-    res.json(images);
+    //veritabanına kaydedecez resim pathlarini
+    console.log(req.body);
+    const intern = await Internship.findOne({
+      _id: req.body.internshipID,
+    });
+
+    var sublistIndex = intern.subList.findIndex(
+      (item) => item._id.toString() === req.body.sublistItemID.toString()
+    );
+
+    intern.subList[sublistIndex].attachments = [];
+    intern.subList[sublistIndex].status = "beklemede";
+    images.map((item) => intern.subList[sublistIndex].attachments.push(item));
+    console.log(intern);
+    intern
+      .save()
+      .then(() => {
+        res.json(images);
+      })
+      .catch((err) => res.json(err));
   }
 );
 
